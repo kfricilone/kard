@@ -17,6 +17,7 @@
 import kotlinx.css.Align
 import kotlinx.css.BorderStyle
 import kotlinx.css.Color
+import kotlinx.css.CssBuilder
 import kotlinx.css.Display
 import kotlinx.css.FlexDirection
 import kotlinx.css.FlexWrap
@@ -53,7 +54,6 @@ import kotlinx.css.rem
 import kotlinx.css.textDecoration
 import kotlinx.css.toCustomProperty
 import kotlinx.css.width
-import org.w3c.dom.HTMLElement
 import styled.StyleSheet
 import styled.injectGlobal
 
@@ -61,37 +61,36 @@ import styled.injectGlobal
  * Created by Kyle Fricilone on Jan 01, 2021.
  */
 
-private const val fgCol: String = "gh-fg-col"
-private const val bgCol: String = "gh-bg-col"
-private const val borderCol: String = "gh-border-col"
-private const val linkCol: String = "gh-link-col"
+internal const val fgCol: String = "gh-fg-col"
+internal const val bgCol: String = "gh-bg-col"
+internal const val borderCol: String = "gh-border-col"
+internal const val linkCol: String = "gh-link-col"
 
 internal fun injectGhCss() {
-    injectGlobal {
-        +GhStyles.main
-    }
+    injectGlobal(
+        CssBuilder(isStyledComponent = true).apply {
+            +GhStyles.main
+        }
+    )
 }
 
 internal fun injectGhTheme(dark: Boolean) {
-    injectGlobal {
-        root {
-            setCustomProperty(fgCol, Color(if (dark) "#8b949e" else "#586069"))
-            setCustomProperty(bgCol, Color(if (dark) "#0d1117" else "#fff"))
-            setCustomProperty(borderCol, Color(if (dark) "#30363d" else "#e1e4e8"))
-            setCustomProperty(linkCol, Color(if (dark) "#58a6ff" else "#0366d6"))
+    injectGlobal(
+        CssBuilder(isStyledComponent = true).apply {
+            root {
+                setCustomProperty(fgCol, Color(if (dark) fgColDark else fgColLight))
+                setCustomProperty(bgCol, Color(if (dark) bgColDark else bgColLight))
+                setCustomProperty(borderCol, Color(if (dark) borderColDark else borderColLight))
+                setCustomProperty(linkCol, Color(if (dark) linkColDark else linkColLight))
+            }
         }
-    }
-}
-
-@JsName("switchGhTheme")
-public fun switchGhTheme(element: HTMLElement, dark: Boolean) {
-    element.style.setProperty("--$fgCol", if (dark) "#8b949e" else "#586069")
-    element.style.setProperty("--$bgCol", if (dark) "#0d1117" else "#fff")
-    element.style.setProperty("--$borderCol", if (dark) "#30363d" else "#e1e4e8")
-    element.style.setProperty("--$linkCol", if (dark) "#58a6ff" else "#0366d6")
+    )
 }
 
 internal object GhStyles : StyleSheet("kard", isStatic = true) {
+
+    private const val FONTS = "Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,Oxygen,Droid Sans,Ubuntu," +
+        "Cantarell,Open Sans,Helvetica Neue,sans-serif"
 
     internal val main by css {
         padding(1.rem)
@@ -102,7 +101,7 @@ internal object GhStyles : StyleSheet("kard", isStatic = true) {
         display = Display.flex
         flexDirection = FlexDirection.column
         fontSize = 1.rem
-        fontFamily = "Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,Oxygen,Droid Sans,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif"
+        fontFamily = FONTS
 
         put("color", fgCol.toCustomProperty())
         put("background-color", bgCol.toCustomProperty())

@@ -17,7 +17,17 @@
 /**
  * Created by Kyle Fricilone on Jan 02, 2021.
  */
-internal val colors: Map<String, String?> = mapOf(
+
+internal const val fgColLight = "#586069"
+internal const val fgColDark = "#8b949e"
+internal const val bgColLight = "#fff"
+internal const val bgColDark = "#0d1117"
+internal const val borderColLight = "#e1e4e8"
+internal const val borderColDark = "#30363d"
+internal const val linkColLight = "#0366d6"
+internal const val linkColDark = "#58a6ff"
+
+internal val languageColors: Map<String, String?> = mapOf(
     "1C Enterprise" to "#814CCC",
     "2-Dimensional Array" to "#38761D",
     "4D" to "#004289",

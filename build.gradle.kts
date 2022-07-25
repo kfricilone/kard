@@ -13,8 +13,24 @@ plugins {
     signing
 }
 
-group = Props.group
-version = Props.version
+val jvmVersion = JavaVersion.VERSION_11.toString()
+val commonArgs = listOf(
+    "-opt-in=kotlin.contracts.ExperimentalContracts",
+    "-opt-in=kotlin.time.ExperimentalTime",
+    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+    "-Xinline-classes",
+    "-Xallow-result-return-type"
+)
+val jvmArgs = commonArgs + listOf(
+        "-Xjsr305=strict"
+)
+val jsArgs = commonArgs + listOf(
+    "-opt-in=kotlin.js.ExperimentalJsExport",
+    "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi"
+)
+
+group = "me.kfricilone"
+version = "1.0.0-SNAPSHOT"
 description = "A Kotlin/JS library for generating github like repository cards."
 
 tasks.withType<Wrapper> {
@@ -42,8 +58,8 @@ kotlin {
     jvm {
         compilations.all {
             kotlinOptions {
-                jvmTarget = Props.jvmVersion
-                freeCompilerArgs = Props.jvmArgs
+                jvmTarget = jvmVersion
+                freeCompilerArgs = jvmArgs
             }
         }
         testRuns["test"].executionTask.configure {
@@ -54,7 +70,7 @@ kotlin {
     js(LEGACY) {
         compilations.all {
             kotlinOptions {
-                freeCompilerArgs = Props.jsArgs
+                freeCompilerArgs = jsArgs
             }
         }
 

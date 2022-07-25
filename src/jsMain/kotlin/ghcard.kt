@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.serialization.json.Json
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.asList
 import react.dom.render
 
@@ -48,7 +49,6 @@ public fun buildGhCards(
     dark: Boolean = false,
     error: Boolean = false
 ) {
-
     injectGhTheme(dark)
     injectGhCss()
 
@@ -56,7 +56,6 @@ public fun buildGhCards(
 
     val scope = MainScope() + CoroutineName("kard")
     scope.launch {
-
         val repos = fetchAll(urls)
         if (error) repos.forEach { it.onFailure { t -> console.error(t) } }
         repos.mapNotNull { it.getOrNull() }
@@ -70,6 +69,14 @@ public fun buildGhCards(
                 }
             }
     }
+}
+
+@JsName("switchGhTheme")
+public fun switchGhTheme(element: HTMLElement, dark: Boolean) {
+    element.style.setProperty("--$fgCol", if (dark) fgColDark else fgColLight)
+    element.style.setProperty("--$bgCol", if (dark) bgColDark else bgColLight)
+    element.style.setProperty("--$borderCol", if (dark) borderColDark else borderColLight)
+    element.style.setProperty("--$linkCol", if (dark) linkColDark else linkColLight)
 }
 
 private fun collect(): List<Pair<Element, String>> {
