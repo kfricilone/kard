@@ -37,3 +37,8 @@ internal data class Repo(
     val license: License? = null,
     val parent: Repo? = null
 )
+
+@Serializable
+internal data class LangColor(
+    val color: String?
+)

@@ -14,13 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.BrowserUserAgent
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -56,40 +49,9 @@ class RepoTest {
         assertNull(repo.language)
     }
 
-    @Test
-    fun test_web_license() = runTest {
-        val repo = jsonClient.get("https://api.github.com/repos/angular/angular").body<Repo>()
-        assertNotNull(repo.license)
-    }
-
-    @Test
-    fun test_web_forked() = runTest {
-        val repo = jsonClient.get("https://api.github.com/repos/jetbrains/swot").body<Repo>()
-        assertNotNull(repo.parent)
-    }
-
-    @Test
-    fun test_web_null_license() = runTest {
-        val repo = jsonClient.get("https://api.github.com/repos/jetbrains/intellij-kotlin").body<Repo>()
-        assertNull(repo.license)
-    }
-
-    @Test
-    fun test_web_null_lang() = runTest {
-        val repo = jsonClient.get("https://api.github.com/repos/angular/bower-angular-loader").body<Repo>()
-        assertNull(repo.language)
-    }
-
     private companion object {
 
         private val format = Json { ignoreUnknownKeys = true }
-
-        private val jsonClient = HttpClient {
-            install(ContentNegotiation) {
-                json(Json { ignoreUnknownKeys = true })
-            }
-            BrowserUserAgent()
-        }
 
         private val ANGULAR =
             """

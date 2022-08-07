@@ -37,6 +37,9 @@ import react.dom.render
 /**
  * Created by Kyle Fricilone on Jan 05, 2021.
  */
+private const val COLORS_URL = "https://gitcdn.link/cdn/ozh/github-colors/master/colors.json"
+private const val GH_API_URL = "https://api.github.com/repos/"
+
 private val jsonClient = HttpClient {
     install(ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
@@ -56,6 +59,9 @@ public fun buildGhCards(
 
     val scope = MainScope() + CoroutineName("kard")
     scope.launch {
+        val colors = jsonClient.get(COLORS_URL)
+            .body<Map<String, LangColor>>()
+
         val repos = fetchAll(urls)
         if (error) repos.forEach { it.onFailure { t -> console.error(t) } }
         repos.mapNotNull { it.getOrNull() }
@@ -64,6 +70,7 @@ public fun buildGhCards(
                     child(Card::class) {
                         attrs {
                             repo = it.second
+                            this.colors = colors
                         }
                     }
                 }
@@ -99,6 +106,6 @@ private suspend fun fetchAll(
 private suspend fun fetchSuspend(
     request: Pair<Element, String>
 ): Result<Pair<Element, Repo>> = runCatching {
-    val repo = jsonClient.get("https://api.github.com/repos/${request.second}").body<Repo>()
+    val repo = jsonClient.get(GH_API_URL + request.second).body<Repo>()
     Pair(request.first, repo)
 }

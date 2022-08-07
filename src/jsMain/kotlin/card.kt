@@ -21,10 +21,12 @@ import react.State
 
 internal external interface CardProps : Props {
     var repo: Repo
+    var colors: Map<String, LangColor>
 }
 
 internal external interface CardState : State {
     var repo: Repo
+    var colors: Map<String, LangColor>
 }
 
 @JsExport
@@ -32,11 +34,12 @@ internal class Card(props: CardProps) : RComponent<CardProps, CardState>(props) 
 
     override fun CardState.init(props: CardProps) {
         repo = props.repo
+        colors = props.colors
     }
 
     override fun RBuilder.render() {
         header(state.repo)
         body(state.repo)
-        footer(state.repo)
+        footer(state.repo, state.colors)
     }
 }
