@@ -8,9 +8,9 @@ coroutines = "1.6.4"
 serialization = "1.4.0"
 ktor = "2.1.0"
 html = "0.8.0"
-css = "1.0.0-pre.376"
-styled = "1.2.1-pre.376"
-react = "18.2.0-pre.376"
+css = "1.0.0-pre.382"
+styled = "1.2.1-pre.382"
+react = "18.2.0-pre.382"
 
 [plugins]
 dependencies = { id = "com.github.ben-manes.versions", version.ref = "dependencies" }
