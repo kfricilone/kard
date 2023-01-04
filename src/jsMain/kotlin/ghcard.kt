@@ -20,7 +20,7 @@ import io.ktor.client.plugins.BrowserUserAgent
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.browser.document
+import js.core.asList
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -29,15 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.serialization.json.Json
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.asList
 import react.dom.render
+import web.dom.Element
+import web.dom.document
+import web.html.HTMLElement
 
 /**
  * Created by Kyle Fricilone on Jan 05, 2021.
  */
-private const val COLORS_URL = "https://gitcdn.link/cdn/ozh/github-colors/master/colors.json"
+private const val COLORS_URL = "https://cdn.jsdelivr.net/gh/ozh/github-colors/colors.json"
 private const val GH_API_URL = "https://api.github.com/repos/"
 
 private val jsonClient = HttpClient {
