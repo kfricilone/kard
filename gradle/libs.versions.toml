@@ -1,16 +1,16 @@
 [versions]
-gradle = "7.6"
-dependencies = "0.44.0"
-kotlin = "1.8.0"
+gradle = "8.0.1"
+dependencies = "0.45.0"
+kotlin = "1.8.10"
 kover = "0.6.1"
 kotlinter = "3.13.0"
 coroutines = "1.6.4"
 serialization = "1.4.1"
-ktor = "2.2.1"
+ktor = "2.2.3"
 html = "0.8.1"
-css = "1.0.0-pre.467"
-styled = "1.2.1-pre.467"
-react = "18.2.0-pre.467"
+css = "1.0.0-pre.499"
+styled = "1.2.2-pre.499"
+react = "18.2.0-pre.499"
 
 [plugins]
 dependencies = { id = "com.github.ben-manes.versions", version.ref = "dependencies" }
