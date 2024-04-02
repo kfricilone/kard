@@ -13,6 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.utils
 
 import kotlin.js.Date
 import kotlin.math.max
@@ -33,18 +34,22 @@ internal fun calcElapsed(date: String): String {
     val from = Date.parse(date)
 
     val delta = now - from
-    val time = when {
-        delta >= YEAR -> format("year", delta / YEAR)
-        delta >= MONTH -> format("month", delta / MONTH)
-        delta >= DAY -> format("day", delta / DAY)
-        delta >= HOUR -> format("hour", delta / HOUR)
-        else -> format("minute", delta / MINUTE)
-    }
+    val time =
+        when {
+            delta >= YEAR -> format("year", delta / YEAR)
+            delta >= MONTH -> format("month", delta / MONTH)
+            delta >= DAY -> format("day", delta / DAY)
+            delta >= HOUR -> format("hour", delta / HOUR)
+            else -> format("minute", delta / MINUTE)
+        }
 
     return "Updated $time ago"
 }
 
-private fun format(unit: String, amount: Double): String {
+private fun format(
+    unit: String,
+    amount: Double,
+): String {
     val v = max(1.0, amount).toInt()
     var str = "$v $unit"
     if (v != 1) str += "s"

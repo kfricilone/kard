@@ -13,33 +13,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.api
 
-import react.Props
-import react.RBuilder
-import react.RComponent
-import react.State
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal external interface CardProps : Props {
-    var repo: Repo
-    var colors: Map<String, LangColor>
-}
-
-internal external interface CardState : State {
-    var repo: Repo
-    var colors: Map<String, LangColor>
-}
-
-@JsExport
-internal class Card(props: CardProps) : RComponent<CardProps, CardState>(props) {
-
-    override fun CardState.init(props: CardProps) {
-        repo = props.repo
-        colors = props.colors
-    }
-
-    override fun RBuilder.render() {
-        header(state.repo)
-        body(state.repo)
-        footer(state.repo, state.colors)
-    }
-}
+@Serializable
+internal data class License(
+    @SerialName("spdx_id") val name: String,
+)

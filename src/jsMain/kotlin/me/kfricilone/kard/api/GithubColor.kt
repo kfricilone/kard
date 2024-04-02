@@ -13,23 +13,11 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.api
 
-import react.RBuilder
-import react.dom.span
-import styled.css
-import styled.styledDiv
+import kotlinx.serialization.Serializable
 
-/**
- * Created by Kyle Fricilone on Jan 02, 2021.
- */
-internal fun RBuilder.body(repo: Repo) {
-    styledDiv {
-        css {
-            +GhStyles.body
-        }
-
-        span {
-            repo.description?.let { +it }
-        }
-    }
-}
+@Serializable
+internal data class GithubColor(
+    val color: String?,
+)

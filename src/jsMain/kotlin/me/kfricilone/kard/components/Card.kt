@@ -13,21 +13,35 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.components
 
-import kotlinx.html.HTMLTag
-import kotlinx.html.HtmlBlockInlineTag
-import kotlinx.html.TagConsumer
-import kotlinx.html.attributesMapOf
+import me.kfricilone.kard.api.GithubColor
+import me.kfricilone.kard.api.Repo
+import react.Props
 import react.RBuilder
-import react.dom.RDOMBuilder
-import react.dom.tag
+import react.RComponent
+import react.State
 
-/**
- * Created by Kyle Fricilone on Jan 02, 2021.
- */
-internal inline fun RBuilder.path(classes: String? = null, block: RDOMBuilder<PATH>.() -> Unit): Unit =
-    tag(block) { PATH(attributesMapOf("class", classes), it) }
+internal external interface CardProps : Props {
+    var repo: Repo
+    var colors: Map<String, GithubColor>
+}
 
-internal open class PATH(initialAttributes: Map<String, String>, override val consumer: TagConsumer<*>) :
-    HTMLTag("path", consumer, initialAttributes, null, false, true),
-    HtmlBlockInlineTag
+internal external interface CardState : State {
+    var repo: Repo
+    var colors: Map<String, GithubColor>
+}
+
+@JsExport
+internal class Card(props: CardProps) : RComponent<CardProps, CardState>(props) {
+    override fun CardState.init(props: CardProps) {
+        repo = props.repo
+        colors = props.colors
+    }
+
+    override fun RBuilder.render() {
+        header(state.repo)
+        body(state.repo)
+        footer(state.repo, state.colors)
+    }
+}

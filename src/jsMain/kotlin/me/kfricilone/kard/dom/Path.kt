@@ -13,32 +13,24 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.dom
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.html.HTMLTag
+import kotlinx.html.HtmlBlockInlineTag
+import kotlinx.html.TagConsumer
+import kotlinx.html.attributesMapOf
+import react.RBuilder
+import react.dom.RDOMBuilder
+import react.dom.tag
 
-@Serializable
-internal data class License(
-    @SerialName("spdx_id") val name: String
-)
+/**
+ * Created by Kyle Fricilone on Jan 02, 2021.
+ */
+internal inline fun RBuilder.path(
+    classes: String? = null,
+    block: RDOMBuilder<PATH>.() -> Unit,
+): Unit = tag(block) { PATH(attributesMapOf("class", classes), it) }
 
-@Serializable
-internal data class Repo(
-    val name: String,
-    @SerialName("full_name") val fullName: String,
-    @SerialName("html_url") val url: String,
-    val description: String?,
-    val fork: Boolean,
-    val language: String?,
-    @SerialName("stargazers_count") val stars: Int,
-    @SerialName("forks_count") val forks: Int,
-    @SerialName("open_issues_count") val issues: Int,
-    @SerialName("pushed_at") val update: String,
-    val license: License? = null,
-    val parent: Repo? = null
-)
-
-@Serializable
-internal data class LangColor(
-    val color: String?
-)
+internal open class PATH(initialAttributes: Map<String, String>, override val consumer: TagConsumer<*>) :
+    HTMLTag("path", consumer, initialAttributes, null, false, true),
+    HtmlBlockInlineTag

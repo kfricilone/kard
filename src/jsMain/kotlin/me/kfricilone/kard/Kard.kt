@@ -13,6 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -20,7 +21,7 @@ import io.ktor.client.plugins.BrowserUserAgent
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
-import js.core.asList
+import js.array.asList
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -29,6 +30,23 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.serialization.json.Json
+import me.kfricilone.kard.api.GithubColor
+import me.kfricilone.kard.api.Repo
+import me.kfricilone.kard.components.Card
+import me.kfricilone.kard.constants.BACKGROUND_COLOR
+import me.kfricilone.kard.constants.BACKGROUND_COLOR_DARK
+import me.kfricilone.kard.constants.BACKGROUND_COLOR_LIGHT
+import me.kfricilone.kard.constants.BORDER_COLOR
+import me.kfricilone.kard.constants.BORDER_COLOR_DARK
+import me.kfricilone.kard.constants.BORDER_COLOR_LIGHT
+import me.kfricilone.kard.constants.COLORS_URL
+import me.kfricilone.kard.constants.FOREGROUND_COLOR
+import me.kfricilone.kard.constants.FOREGROUND_COLOR_DARK
+import me.kfricilone.kard.constants.FOREGROUND_COLOR_LIGHT
+import me.kfricilone.kard.constants.GH_API_URL
+import me.kfricilone.kard.constants.LINK_COLOR
+import me.kfricilone.kard.constants.LINK_COLOR_DARK
+import me.kfricilone.kard.constants.LINK_COLOR_LIGHT
 import react.dom.render
 import web.dom.Element
 import web.dom.document
@@ -37,20 +55,20 @@ import web.html.HTMLElement
 /**
  * Created by Kyle Fricilone on Jan 05, 2021.
  */
-private const val COLORS_URL = "https://cdn.jsdelivr.net/gh/ozh/github-colors/colors.json"
-private const val GH_API_URL = "https://api.github.com/repos/"
 
-private val jsonClient = HttpClient {
-    install(ContentNegotiation) {
-        json(Json { ignoreUnknownKeys = true })
+private val jsonClient =
+    HttpClient {
+        install(ContentNegotiation) {
+            json(Json { ignoreUnknownKeys = true })
+        }
+        BrowserUserAgent()
     }
-    BrowserUserAgent()
-}
 
-@JsName("buildGhCards")
-public fun buildGhCards(
+@JsExport
+@JsName("buildKards")
+public fun buildKards(
     dark: Boolean = false,
-    error: Boolean = false
+    error: Boolean = false,
 ) {
     injectGhTheme(dark)
     injectGhCss()
@@ -59,8 +77,9 @@ public fun buildGhCards(
 
     val scope = MainScope() + CoroutineName("kard")
     scope.launch {
-        val colors = jsonClient.get(COLORS_URL)
-            .body<Map<String, LangColor>>()
+        val colors =
+            jsonClient.get(COLORS_URL)
+                .body<Map<String, GithubColor>>()
 
         val repos = fetchAll(urls)
         if (error) repos.forEach { it.onFailure { t -> console.error(t) } }
@@ -78,12 +97,16 @@ public fun buildGhCards(
     }
 }
 
-@JsName("switchGhTheme")
-public fun switchGhTheme(element: HTMLElement, dark: Boolean) {
-    element.style.setProperty("--$fgCol", if (dark) fgColDark else fgColLight)
-    element.style.setProperty("--$bgCol", if (dark) bgColDark else bgColLight)
-    element.style.setProperty("--$borderCol", if (dark) borderColDark else borderColLight)
-    element.style.setProperty("--$linkCol", if (dark) linkColDark else linkColLight)
+@JsExport
+@JsName("switchKardTheme")
+public fun switchKardTheme(
+    element: HTMLElement,
+    dark: Boolean,
+) {
+    element.style.setProperty("--$FOREGROUND_COLOR", if (dark) FOREGROUND_COLOR_DARK else FOREGROUND_COLOR_LIGHT)
+    element.style.setProperty("--$BACKGROUND_COLOR", if (dark) BACKGROUND_COLOR_DARK else BACKGROUND_COLOR_LIGHT)
+    element.style.setProperty("--$BORDER_COLOR", if (dark) BORDER_COLOR_DARK else BORDER_COLOR_LIGHT)
+    element.style.setProperty("--$LINK_COLOR", if (dark) LINK_COLOR_DARK else LINK_COLOR_LIGHT)
 }
 
 private fun collect(): List<Pair<Element, String>> {
@@ -96,16 +119,12 @@ private fun collect(): List<Pair<Element, String>> {
         }
 }
 
-private suspend fun fetchAll(
-    requests: List<Pair<Element, String>>
-) = coroutineScope {
-    requests.map { async { fetchSuspend(it) } }
-        .awaitAll()
-}
+private suspend fun fetchAll(requests: List<Pair<Element, String>>) =
+    coroutineScope {
+        requests.map { async { fetchSuspend(it) } }.awaitAll()
+    }
 
-private suspend fun fetchSuspend(
-    request: Pair<Element, String>
-): Result<Pair<Element, Repo>> = runCatching {
-    val repo = jsonClient.get(GH_API_URL + request.second).body<Repo>()
-    Pair(request.first, repo)
-}
+private suspend fun fetchSuspend(request: Pair<Element, String>): Result<Pair<Element, Repo>> =
+    runCatching {
+        Pair(request.first, jsonClient.get(GH_API_URL + request.second).body<Repo>())
+    }

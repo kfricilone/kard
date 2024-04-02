@@ -13,7 +13,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.components
 
+import me.kfricilone.kard.GhStyles
+import me.kfricilone.kard.api.Repo
+import me.kfricilone.kard.constants.ICON_SVG
+import me.kfricilone.kard.dom.path
 import react.RBuilder
 import styled.css
 import styled.styledA
@@ -25,10 +30,6 @@ import styled.styledSvg
 /**
  * Created by Kyle Fricilone on Jan 02, 2021.
  */
-private const val ICON_SVG = "M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 1" +
-    "10-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.07" +
-    "4-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3" +
-    ".25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"
 
 internal fun RBuilder.header(repo: Repo) {
     styledDiv {

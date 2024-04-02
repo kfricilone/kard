@@ -13,15 +13,19 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard
 
 import kotlinx.css.Align
 import kotlinx.css.BorderStyle
 import kotlinx.css.Color
 import kotlinx.css.CssBuilder
 import kotlinx.css.Display
+import kotlinx.css.Flex
 import kotlinx.css.FlexDirection
 import kotlinx.css.FlexWrap
 import kotlinx.css.FontWeight
+import kotlinx.css.Margin
+import kotlinx.css.Padding
 import kotlinx.css.alignItems
 import kotlinx.css.backgroundColor
 import kotlinx.css.borderRadius
@@ -48,12 +52,23 @@ import kotlinx.css.pct
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine
 import kotlinx.css.properties.lh
-import kotlinx.css.properties.textDecoration
 import kotlinx.css.px
 import kotlinx.css.rem
 import kotlinx.css.textDecoration
 import kotlinx.css.toCustomProperty
 import kotlinx.css.width
+import me.kfricilone.kard.constants.BACKGROUND_COLOR
+import me.kfricilone.kard.constants.BACKGROUND_COLOR_DARK
+import me.kfricilone.kard.constants.BACKGROUND_COLOR_LIGHT
+import me.kfricilone.kard.constants.BORDER_COLOR
+import me.kfricilone.kard.constants.BORDER_COLOR_DARK
+import me.kfricilone.kard.constants.BORDER_COLOR_LIGHT
+import me.kfricilone.kard.constants.FOREGROUND_COLOR
+import me.kfricilone.kard.constants.FOREGROUND_COLOR_DARK
+import me.kfricilone.kard.constants.FOREGROUND_COLOR_LIGHT
+import me.kfricilone.kard.constants.LINK_COLOR
+import me.kfricilone.kard.constants.LINK_COLOR_DARK
+import me.kfricilone.kard.constants.LINK_COLOR_LIGHT
 import styled.StyleSheet
 import styled.injectGlobal
 
@@ -61,16 +76,11 @@ import styled.injectGlobal
  * Created by Kyle Fricilone on Jan 01, 2021.
  */
 
-internal const val fgCol: String = "gh-fg-col"
-internal const val bgCol: String = "gh-bg-col"
-internal const val borderCol: String = "gh-border-col"
-internal const val linkCol: String = "gh-link-col"
-
 internal fun injectGhCss() {
     injectGlobal(
         CssBuilder(isStyledComponent = true).apply {
             +GhStyles.main
-        }
+        },
     )
 }
 
@@ -78,23 +88,22 @@ internal fun injectGhTheme(dark: Boolean) {
     injectGlobal(
         CssBuilder(isStyledComponent = true).apply {
             root {
-                setCustomProperty(fgCol, Color(if (dark) fgColDark else fgColLight))
-                setCustomProperty(bgCol, Color(if (dark) bgColDark else bgColLight))
-                setCustomProperty(borderCol, Color(if (dark) borderColDark else borderColLight))
-                setCustomProperty(linkCol, Color(if (dark) linkColDark else linkColLight))
+                setCustomProperty(FOREGROUND_COLOR, Color(if (dark) FOREGROUND_COLOR_DARK else FOREGROUND_COLOR_LIGHT))
+                setCustomProperty(BACKGROUND_COLOR, Color(if (dark) BACKGROUND_COLOR_DARK else BACKGROUND_COLOR_LIGHT))
+                setCustomProperty(BORDER_COLOR, Color(if (dark) BORDER_COLOR_DARK else BORDER_COLOR_LIGHT))
+                setCustomProperty(LINK_COLOR, Color(if (dark) LINK_COLOR_DARK else LINK_COLOR_LIGHT))
             }
-        }
+        },
     )
 }
 
 internal object GhStyles : StyleSheet("kard", isStatic = true) {
-
-    private const val FONTS = "Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,Oxygen,Droid Sans,Ubuntu," +
-        "Cantarell,Open Sans,Helvetica Neue,sans-serif"
+    private const val FONTS =
+        "Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,Oxygen,Droid Sans,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif"
 
     internal val main by css {
-        padding(1.rem)
-        margin(.5.rem)
+        padding = Padding(1.rem)
+        margin = Margin(.5.rem)
         borderWidth = 1.px
         borderRadius = 6.px
         borderStyle = BorderStyle.solid
@@ -103,9 +112,9 @@ internal object GhStyles : StyleSheet("kard", isStatic = true) {
         fontSize = 1.rem
         fontFamily = FONTS
 
-        put("color", fgCol.toCustomProperty())
-        put("background-color", bgCol.toCustomProperty())
-        put("border-color", borderCol.toCustomProperty())
+        put("color", FOREGROUND_COLOR.toCustomProperty())
+        put("background-color", BACKGROUND_COLOR.toCustomProperty())
+        put("border-color", BORDER_COLOR.toCustomProperty())
     }
 
     internal val head by css {
@@ -119,7 +128,7 @@ internal object GhStyles : StyleSheet("kard", isStatic = true) {
     }
 
     internal val foot by css {
-        margin(horizontal = (-.5).rem)
+        margin = Margin(horizontal = (-.5).rem)
         display = Display.flex
         flexWrap = FlexWrap.wrap
         alignItems = Align.center
@@ -143,15 +152,15 @@ internal object GhStyles : StyleSheet("kard", isStatic = true) {
     }
 
     internal val repo by css {
-        margin(0.px)
-        padding(0.px)
+        margin = Margin(0.px)
+        padding = Padding(0.px)
         fontSize = 1.rem
         fontFamily = "inherit"
         fontWeight = FontWeight.w500
-        put("color", linkCol.toCustomProperty())
+        put("color", LINK_COLOR.toCustomProperty())
 
         hover {
-            textDecoration(TextDecorationLine.underline)
+            textDecoration = TextDecoration(setOf(TextDecorationLine.underline))
         }
     }
 
@@ -165,7 +174,7 @@ internal object GhStyles : StyleSheet("kard", isStatic = true) {
     }
 
     internal val stat by css {
-        margin(horizontal = (.5).rem)
+        margin = Margin(horizontal = (.5).rem)
         display = Display.flex
         alignItems = Align.center
         color = Color.inherit
@@ -182,14 +191,14 @@ internal object GhStyles : StyleSheet("kard", isStatic = true) {
     }
 
     internal val update by css {
-        flex(0.0, 0.0, 100.pct)
+        flex = Flex(0.0, 0.0, 100.pct)
         marginTop = 1.em
         fontSize = .75.rem
     }
 
     internal val highlight by css {
         hover {
-            put("color", linkCol.toCustomProperty())
+            put("color", LINK_COLOR.toCustomProperty())
         }
     }
 

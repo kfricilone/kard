@@ -13,16 +13,23 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.api
 
-/**
- * Created by Kyle Fricilone on Jan 02, 2021.
- */
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal const val fgColLight = "#586069"
-internal const val fgColDark = "#8b949e"
-internal const val bgColLight = "#fff"
-internal const val bgColDark = "#0d1117"
-internal const val borderColLight = "#e1e4e8"
-internal const val borderColDark = "#30363d"
-internal const val linkColLight = "#0366d6"
-internal const val linkColDark = "#58a6ff"
+@Serializable
+internal data class Repo(
+    val name: String,
+    @SerialName("full_name") val fullName: String,
+    @SerialName("html_url") val url: String,
+    val description: String?,
+    val fork: Boolean,
+    val language: String?,
+    @SerialName("stargazers_count") val stars: Int,
+    @SerialName("forks_count") val forks: Int,
+    @SerialName("open_issues_count") val issues: Int,
+    @SerialName("pushed_at") val update: String,
+    val license: License? = null,
+    val parent: Repo? = null,
+)

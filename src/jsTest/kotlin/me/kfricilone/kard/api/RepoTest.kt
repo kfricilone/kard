@@ -13,8 +13,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+package me.kfricilone.kard.api
 
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -24,7 +24,6 @@ import kotlin.test.assertNull
  * Created by Kyle Fricilone on Jan 11, 2021.
  */
 class RepoTest {
-
     @Test
     fun test_static_license() {
         val repo = format.decodeFromString<Repo>(ANGULAR)
@@ -50,7 +49,6 @@ class RepoTest {
     }
 
     private companion object {
-
         private val format = Json { ignoreUnknownKeys = true }
 
         private val ANGULAR =

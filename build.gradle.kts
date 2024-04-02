@@ -13,21 +13,7 @@ plugins {
     signing
 }
 
-val jvmVersion = JavaVersion.VERSION_11.toString()
-val commonArgs = listOf(
-    "-opt-in=kotlin.contracts.ExperimentalContracts",
-    "-opt-in=kotlin.time.ExperimentalTime",
-    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-    "-Xinline-classes",
-    "-Xallow-result-return-type"
-)
-val jvmArgs = commonArgs + listOf(
-        "-Xjsr305=strict"
-)
-val jsArgs = commonArgs + listOf(
-    "-opt-in=kotlin.js.ExperimentalJsExport",
-    "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi"
-)
+val jvmVersion = JavaVersion.VERSION_21
 
 group = "me.kfricilone"
 version = "1.0.0-SNAPSHOT"
@@ -49,37 +35,20 @@ tasks.withType<DependencyUpdatesTask> {
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
 }
 
 kotlin {
     explicitApi()
 
     jvm {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = jvmVersion
-                freeCompilerArgs = jvmArgs
-            }
-        }
-        testRuns["test"].executionTask.configure {
-            useJUnit()
-        }
+        jvmToolchain(jvmVersion.majorVersion.toInt())
     }
 
-    js(LEGACY) {
-        compilations.all {
-            kotlinOptions {
-                freeCompilerArgs = jsArgs
-            }
-        }
+    js {
 
         binaries.executable()
 
         browser {
-            dceTask {
-                keep("kard.buildGhCards", "kard.switchGhTheme")
-            }
             testTask {
                 useKarma {
                     useChromeHeadless()
@@ -90,38 +59,49 @@ kotlin {
 
     sourceSets {
         val jsMain by getting {
+            languageSettings.optIn("kotlin.js.ExperimentalJsExport")
             dependencies {
-                implementation(kotlin("stdlib-js", libs.versions.kotlin.get()))
-                implementation(libs.bundles.js)
-                implementation(libs.bundles.common)
+                implementation(kotlin("stdlib-js"))
+                implementation(libs.kotlin.react)
+                implementation(libs.kotlin.reactdom)
+                implementation(libs.kotlin.styled)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.html)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.serialization.kotlinx.json)
             }
         }
+
         val jsTest by getting {
             dependencies {
-                implementation(kotlin("test-js", libs.versions.kotlin.get()))
+                implementation(kotlin("test-js"))
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
     }
 }
 
-val move by tasks.registering {
+val copyJs = tasks.register<Copy>("copyJsResources") {
+    val distTask = tasks.getByName("jsBrowserDistribution")
     val webpackTask = tasks.getByName<KotlinWebpack>("jsBrowserProductionWebpack")
-    doLast {
-        File(webpackTask.destinationDirectory, webpackTask.outputFileName).copyTo(
-            File(
-                buildDir,
-                "processedResources/jvm/main/META-INF/resources/webjars/${rootProject.name}/${project.version}/${webpackTask.outputFileName}"
-            ),
-            true
+
+    dependsOn(distTask)
+
+    from({
+        webpackTask.outputDirectory.file(webpackTask.mainOutputFileName)
+    })
+
+    into({
+        layout.buildDirectory.file(
+            "processedResources/jvm/main/META-INF/resources/webjars/${rootProject.name}/${project.version}/${webpackTask.mainOutputFileName.get()}"
         )
-    }
+    })
 }
 
 tasks.named("jvmProcessResources") {
-    val webpackTask = tasks.getByName<KotlinWebpack>("jsBrowserProductionWebpack")
-    dependsOn(webpackTask)
-    finalizedBy(move)
+    dependsOn(copyJs)
 }
 
 publishing {
