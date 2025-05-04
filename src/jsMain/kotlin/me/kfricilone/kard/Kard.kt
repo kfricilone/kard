@@ -15,6 +15,7 @@
  */
 package me.kfricilone.kard
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.BrowserUserAgent
@@ -24,15 +25,12 @@ import io.ktor.serialization.kotlinx.json.json
 import js.array.asList
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.serialization.json.Json
 import me.kfricilone.kard.api.GithubColor
 import me.kfricilone.kard.api.Repo
-import me.kfricilone.kard.components.Card
+import me.kfricilone.kard.components.createCard
 import me.kfricilone.kard.constants.BACKGROUND_COLOR
 import me.kfricilone.kard.constants.BACKGROUND_COLOR_DARK
 import me.kfricilone.kard.constants.BACKGROUND_COLOR_LIGHT
@@ -47,7 +45,7 @@ import me.kfricilone.kard.constants.GH_API_URL
 import me.kfricilone.kard.constants.LINK_COLOR
 import me.kfricilone.kard.constants.LINK_COLOR_DARK
 import me.kfricilone.kard.constants.LINK_COLOR_LIGHT
-import react.dom.render
+import react.dom.client.createRoot
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLElement
@@ -55,6 +53,8 @@ import web.html.HTMLElement
 /**
  * Created by Kyle Fricilone on Jan 05, 2021.
  */
+
+private val logger = KotlinLogging.logger {}
 
 private val jsonClient =
     HttpClient {
@@ -66,34 +66,31 @@ private val jsonClient =
 
 @JsExport
 @JsName("buildKards")
-public fun buildKards(
-    dark: Boolean = false,
-    error: Boolean = false,
-) {
+public fun buildKards(dark: Boolean = false) {
+    logger.info { "Building Kards with dark=$dark" }
+
     injectGhTheme(dark)
     injectGhCss()
-
-    val urls = collect()
 
     val scope = MainScope() + CoroutineName("kard")
     scope.launch {
         val colors =
-            jsonClient.get(COLORS_URL)
+            jsonClient
+                .get(COLORS_URL)
                 .body<Map<String, GithubColor>>()
 
-        val repos = fetchAll(urls)
-        if (error) repos.forEach { it.onFailure { t -> console.error(t) } }
-        repos.mapNotNull { it.getOrNull() }
-            .forEach {
-                render(it.first) {
-                    child(Card::class) {
-                        attrs {
-                            repo = it.second
-                            this.colors = colors
-                        }
+        logger.info { "Fetched ${colors.size} colors" }
+
+        collect().forEach { (element, path) ->
+            launch {
+                fetchRepo(path)
+                    .onFailure { throwable -> logger.error(throwable) { "Error fetching repo=$path" } }
+                    .onSuccess { repo ->
+                        logger.info { "Rendering ${repo.name}" }
+                        createRoot(element).render(createCard(repo, colors))
                     }
-                }
             }
+        }
     }
 }
 
@@ -110,21 +107,15 @@ public fun switchKardTheme(
 }
 
 private fun collect(): List<Pair<Element, String>> {
-    return document.getElementsByClassName("kard-main")
+    return document
+        .getElementsByClassName("kard-main")
         .asList()
         .mapNotNull {
             val path = it.getAttribute("repo-path")
             if (path.isNullOrEmpty()) return@mapNotNull null
-            Pair(it, "$path")
+            Pair(it, path)
         }
 }
 
-private suspend fun fetchAll(requests: List<Pair<Element, String>>) =
-    coroutineScope {
-        requests.map { async { fetchSuspend(it) } }.awaitAll()
-    }
-
-private suspend fun fetchSuspend(request: Pair<Element, String>): Result<Pair<Element, Repo>> =
-    runCatching {
-        Pair(request.first, jsonClient.get(GH_API_URL + request.second).body<Repo>())
-    }
+private suspend fun fetchRepo(path: String): Result<Repo> =
+    runCatching { jsonClient.get(GH_API_URL + path).body<Repo>() }

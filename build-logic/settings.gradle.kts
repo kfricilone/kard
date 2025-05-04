@@ -1,5 +1,4 @@
 pluginManagement {
-    includeBuild("build-logic")
     repositories {
         mavenCentral()
         gradlePluginPortal()
@@ -9,10 +8,12 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        mavenLocal()
+        gradlePluginPortal()
     }
 }
 
-rootProject.name = "kard"
+plugins {
+    id("dev.panuszewski.typesafe-conventions") version "0.6.0"
+}
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "build-logic"

@@ -1,24 +1,35 @@
 [versions]
-coroutines = "1.8.0"
-dependencies = "0.51.0"
-gradle = "8.7"
-html = "0.11.0"
-kotlin = "1.9.23"
-kotlinter = "4.3.0"
-kover = "0.7.6"
-ktor = "2.3.9"
-react = "18.2.0-pre.722"
-serialization = "1.6.3"
-styled = "1.2.4-pre.722"
+compatibility = "0.17.0"
+coroutines = "1.10.2"
+dependencies = "0.52.0"
+detekt = "1.23.6"
+dokka = "2.0.0"
+gradle = "8.14"
+html = "0.12.0"
+java = "21"
+kotlin = "2.1.20"
+kotlinter = "5.0.1"
+kover = "0.9.1"
+ktor = "3.1.2"
+logging = "7.0.7"
+publisher = "1.9.23-dev-45"
+react = "2025.4.18-19.1.0"
+serialization = "1.8.1"
+styled = "2025.4.18"
 
 [plugins]
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "compatibility" }
 dependencies = { id = "com.github.ben-manes.versions", version.ref = "dependencies" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kotlin-libs-publisher = { id = "org.jetbrains.kotlin.libs.publisher", version.ref = "publisher" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 
 [libraries]
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logging" }
 kotlin-react = { module = "org.jetbrains.kotlin-wrappers:kotlin-react-legacy", version.ref = "react" }
 kotlin-reactdom = { module = "org.jetbrains.kotlin-wrappers:kotlin-react-dom", version.ref = "react" }
 kotlin-styled = { module = "org.jetbrains.kotlin-wrappers:kotlin-styled-next", version.ref = "styled" }
@@ -26,7 +37,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html", version.ref = "html" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }

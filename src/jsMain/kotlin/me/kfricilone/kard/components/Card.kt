@@ -18,30 +18,15 @@ package me.kfricilone.kard.components
 import me.kfricilone.kard.api.GithubColor
 import me.kfricilone.kard.api.Repo
 import react.Props
-import react.RBuilder
-import react.RComponent
-import react.State
+import react.ReactElement
+import react.createElement
 
-internal external interface CardProps : Props {
-    var repo: Repo
-    var colors: Map<String, GithubColor>
-}
-
-internal external interface CardState : State {
-    var repo: Repo
-    var colors: Map<String, GithubColor>
-}
-
-@JsExport
-internal class Card(props: CardProps) : RComponent<CardProps, CardState>(props) {
-    override fun CardState.init(props: CardProps) {
-        repo = props.repo
-        colors = props.colors
+internal fun createCard(
+    repo: Repo,
+    colors: Map<String, GithubColor>,
+): ReactElement<Props>? =
+    createElement {
+        header(repo)
+        body(repo)
+        footer(repo, colors)
     }
-
-    override fun RBuilder.render() {
-        header(state.repo)
-        body(state.repo)
-        footer(state.repo, state.colors)
-    }
-}

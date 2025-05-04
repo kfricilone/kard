@@ -31,6 +31,8 @@ internal inline fun RBuilder.path(
     block: RDOMBuilder<PATH>.() -> Unit,
 ): Unit = tag(block) { PATH(attributesMapOf("class", classes), it) }
 
-internal open class PATH(initialAttributes: Map<String, String>, override val consumer: TagConsumer<*>) :
-    HTMLTag("path", consumer, initialAttributes, null, false, true),
+internal open class PATH(
+    initialAttributes: Map<String, String>,
+    override val consumer: TagConsumer<*>,
+) : HTMLTag("path", consumer, initialAttributes, null, false, true),
     HtmlBlockInlineTag
