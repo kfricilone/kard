@@ -64,6 +64,10 @@ val copyJs = tasks.register<Copy>("copyJsResources") {
     })
 }
 
-tasks.named("jvmProcessResources") {
+tasks.jvmProcessResources {
     dependsOn(copyJs)
+}
+
+tasks.check {
+    dependsOn(tasks.detektJsMain)
 }

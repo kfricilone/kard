@@ -18,7 +18,6 @@ package me.kfricilone.kard
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.BrowserUserAgent
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
@@ -46,6 +45,7 @@ import me.kfricilone.kard.constants.LINK_COLOR
 import me.kfricilone.kard.constants.LINK_COLOR_DARK
 import me.kfricilone.kard.constants.LINK_COLOR_LIGHT
 import react.dom.client.createRoot
+import web.cssom.ClassName
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLElement
@@ -54,6 +54,8 @@ import web.html.HTMLElement
  * Created by Kyle Fricilone on Jan 05, 2021.
  */
 
+private val kardClassName = ClassName("kard-main")
+
 private val logger = KotlinLogging.logger {}
 
 private val jsonClient =
@@ -61,7 +63,6 @@ private val jsonClient =
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
         }
-        BrowserUserAgent()
     }
 
 @JsExport
@@ -108,7 +109,7 @@ public fun switchKardTheme(
 
 private fun collect(): List<Pair<Element, String>> {
     return document
-        .getElementsByClassName("kard-main")
+        .getElementsByClassName(kardClassName)
         .asList()
         .mapNotNull {
             val path = it.getAttribute("repo-path")

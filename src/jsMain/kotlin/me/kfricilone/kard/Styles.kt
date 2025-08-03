@@ -97,9 +97,12 @@ internal fun injectGhTheme(dark: Boolean) {
     )
 }
 
+@Suppress("MagicNumber")
 internal object GhStyles : StyleSheet("kard", isStatic = true) {
-    private const val FONTS =
-        "Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,Oxygen,Droid Sans,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif"
+    private val FONTS =
+        """
+        Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,Oxygen,Droid Sans,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif
+        """.trimIndent()
 
     internal val main by css {
         padding = Padding(1.rem)
